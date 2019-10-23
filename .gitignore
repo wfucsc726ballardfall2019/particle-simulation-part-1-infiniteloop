@@ -1,0 +1,6 @@
+*.stdout
+*.error
+serial
+openmp
+autograder
+*.o
