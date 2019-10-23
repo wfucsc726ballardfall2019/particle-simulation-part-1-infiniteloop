@@ -13,7 +13,7 @@ const int SAVEFREQ = 10;
 //
 // particle data structure
 //
-typedef struct 
+struct particle_t
 {
   double x;
   double y;
@@ -21,7 +21,8 @@ typedef struct
   double vy;
   double ax;
   double ay;
-} particle_t;
+  particle_t * next;
+};
 
 //
 //  timing routines
