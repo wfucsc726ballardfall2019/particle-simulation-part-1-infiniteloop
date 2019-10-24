@@ -38,6 +38,14 @@ void apply_force( particle_t &particle, particle_t &neighbor , double *dmin, dou
 void move( particle_t &p );
 
 
+// 
+// bin routines
+//
+void init_grid( int n );
+void bin_particles( int n, particle_t *p);
+void unbin_particles( int n, particle_t *p);
+
+
 //
 //  I/O routines
 //
