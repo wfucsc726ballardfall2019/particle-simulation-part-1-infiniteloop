@@ -10,6 +10,7 @@
 
 double size;
 int num_bins;
+int num_cols;
 
 //
 //  tuned constants
@@ -85,19 +86,28 @@ void init_particles( int n, particle_t *p )
   free( shuffle );
 }
 
-void init_grid( int n )
+int init_grid()
 {
-  num_bins = n/cutoff + 1;
-  grid = (particle_t **)malloc( (n*n) * sizeof( particle_t *));
+  num_cols = (int)(size/cutoff + 1);
+  num_bins = num_cols*num_cols;
+  grid = (particle_t **)malloc( (num_bins) * sizeof( particle_t *));
+  for (int i = 0; i < num_bins; i++) {
+    grid[i] = NULL;
+  }
+  return num_bins;
 }
+
 
 void bin_particles( int n, particle_t *p )
 {
   int index;
+  int x,y;
   for ( int i = 0; i < n; i++ ) 
   {
-    index = (int)(p[i].x/cutoff)*num_bins + (int)(p[i].y/cutoff);
-    
+    index = (int)(p[i].x/cutoff)*num_cols + (int)(p[i].y/cutoff);
+    x = (int)(p[i].x/cutoff);
+    y = (int)(p[i].y/cutoff);
+
     if (grid[index] == NULL) // HEAD
     {
       grid[index] = &p[i];
@@ -108,6 +118,44 @@ void bin_particles( int n, particle_t *p )
       grid[index] = &p[i];
     }
 
+  }
+
+  int count = 0;
+  particle_t * c;
+  for ( int j = 0; j < num_bins; j++) {
+    c = grid[j];
+    while (c != NULL) {
+      count++;
+      c = c->next;
+    }
+  }
+}
+
+void bin_forces(int index, double *dmin, double *davg, int *navg) 
+{
+  particle_t * p;
+  particle_t * n;
+  int neighbor;
+  for ( int i = -1; i <= 1; i++ )
+  {
+    for ( int j = -1; j <= 1; j++ )
+    { 
+      neighbor = index + i*num_cols + j;
+      if (neighbor >= 0 && neighbor < num_bins)
+      {
+        p = grid[index];
+        while (p != NULL)
+        {
+          n = grid[neighbor];
+          while (n != NULL)
+          {
+            apply_force(*p,*n,dmin,davg,navg);
+            n = n->next;
+          }
+          p = p->next;
+        }
+      }
+    }
   }
 }
 
@@ -129,7 +177,6 @@ void unbin_particles( int n, particle_t *p)
 //
 void apply_force( particle_t &particle, particle_t &neighbor , double *dmin, double *davg, int *navg)
 {
-
   double dx = neighbor.x - particle.x;
   double dy = neighbor.y - particle.y;
   double r2 = dx * dx + dy * dy;
