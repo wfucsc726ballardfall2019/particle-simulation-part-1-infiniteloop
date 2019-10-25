@@ -13,7 +13,7 @@ const int SAVEFREQ = 10;
 //
 // particle data structure
 //
-struct particle_t
+typedef struct particle_t
 {
   double x;
   double y;
@@ -22,7 +22,7 @@ struct particle_t
   double ax;
   double ay;
   particle_t * next;
-};
+}particle_t;
 
 //
 //  timing routines
@@ -37,6 +37,14 @@ void init_particles( int n, particle_t *p );
 void apply_force( particle_t &particle, particle_t &neighbor , double *dmin, double *davg, int *navg);
 void move( particle_t &p );
 
+
+// 
+// bin routines
+//
+int init_grid();
+void bin_particles( int n, particle_t *p);
+void unbin_particles( int n, particle_t *p);
+void bin_forces(int index, double *dmin, double *davg, int *navg);
 
 //
 //  I/O routines

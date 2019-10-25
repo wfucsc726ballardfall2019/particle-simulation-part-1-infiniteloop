@@ -8,6 +8,7 @@
 #SBATCH -e auto-serial.%j.error
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=mannlg15@wfu.edu,parssy18@wfu.edu
+#SBATCH --reservation=csc726
 
 cd /deac/classes/csc726/$USER/particle-simulation-part-1-infiniteloop
 
