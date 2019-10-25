@@ -46,7 +46,10 @@ int main( int argc, char **argv )
     navg = 0;
     davg = 0.0;
     dmin = 1.0;
-
+    
+    //
+    //  reset particle accelerations
+    //
     for (int i = 0; i < n; i++) 
     {
       particles[i].ax = particles[i].ay = 0;
@@ -68,20 +71,7 @@ int main( int argc, char **argv )
     //  unbin particles
     //
     unbin_particles(n, particles);
-/*
-    //
-    //  compute forces
-    //
-    for( int i = 0; i < n; i++ )
-    {
-      //printf("Binning: %f,%f\t", particles[i].ax, particles[i].ay);
-      particles[i].ax = particles[i].ay = 0;
-      for (int j = 0; j < n; j++ )
-        apply_force( particles[i], particles[j],&dmin,&davg,&navg);
 
-      //printf("Normal: %f,%f\n", particles[i].ax, particles[i].ay);
-    }
-*/
     //
     //  move particles
     //
