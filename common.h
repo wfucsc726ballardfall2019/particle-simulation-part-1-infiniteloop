@@ -42,8 +42,9 @@ void move( particle_t &p );
 // bin routines
 //
 int init_grid();
-void bin_particles( int n, particle_t *p);
-void unbin_particles( int n, particle_t *p);
+void bin_particle(particle_t *p);
+void unbin_particle(particle_t *p);
+void reset_bin(int bin);
 void bin_forces(int index, double *dmin, double *davg, int *navg);
 
 //
