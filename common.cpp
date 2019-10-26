@@ -98,38 +98,23 @@ int init_grid()
 }
 
 
-void bin_particles( int n, particle_t *p )
+void bin_particle(particle_t *p )
 {
   int index;
-  int x,y;
-  for ( int i = 0; i < n; i++ ) 
+  index = (int)(p->x/cutoff)*num_cols + (int)(p->y/cutoff);
+
+  if (grid[index] == NULL) // HEAD
   {
-    index = (int)(p[i].x/cutoff)*num_cols + (int)(p[i].y/cutoff);
-    x = (int)(p[i].x/cutoff);
-    y = (int)(p[i].y/cutoff);
-
-    if (grid[index] == NULL) // HEAD
-    {
-      grid[index] = &p[i];
-    }
-    else
-    {
-      p[i].next = grid[index];
-      grid[index] = &p[i];
-    }
-
+    grid[index] = p;
+  }
+  else
+  {
+    p->next = grid[index];
+    grid[index] = p;
   }
 
-  int count = 0;
-  particle_t * c;
-  for ( int j = 0; j < num_bins; j++) {
-    c = grid[j];
-    while (c != NULL) {
-      count++;
-      c = c->next;
-    }
-  }
 }
+
 
 void bin_forces(int index, double *dmin, double *davg, int *navg) 
 {
@@ -159,17 +144,14 @@ void bin_forces(int index, double *dmin, double *davg, int *navg)
   }
 }
 
-void unbin_particles( int n, particle_t *p)
+void unbin_particle(particle_t *p)
 {
-  for ( int i = 0; i < n; i++ )
-  {
-    p[i].next = NULL;
-  }
+  p->next = NULL;
+}
 
-  for ( int j = 0; j < num_bins; j++ )
-  {
-    grid[j] = NULL;
-  }
+void reset_bin(int bin)
+{
+  grid[bin] = NULL;
 }
 
 //

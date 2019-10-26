@@ -21,19 +21,24 @@ int main( int argc, char **argv )
         printf( "-o <filename> to specify the output file name\n" );
         printf( "-s <filename> to specify a summary file name\n" ); 
         printf( "-no turns off all correctness checks and particle output\n");   
+        printf( "-p sets the number of threads\n" );
         return 0;
     }
 
     int n = read_int( argc, argv, "-n", 1000 );
+
     char *savename = read_string( argc, argv, "-o", NULL );
     char *sumname = read_string( argc, argv, "-s", NULL );
 
     FILE *fsave = savename ? fopen( savename, "w" ) : NULL;
     FILE *fsum = sumname ? fopen ( sumname, "a" ) : NULL;      
+    int num_threads = read_int( argc, argv, "-p", 1 );
+    omp_set_num_threads(num_threads);
 
     particle_t *particles = (particle_t*) malloc( n * sizeof(particle_t) );
     set_size( n );
     init_particles( n, particles );
+    int num_bins = init_grid();
 
     //
     //  simulate a number of time steps

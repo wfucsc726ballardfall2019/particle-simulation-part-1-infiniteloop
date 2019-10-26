@@ -33,7 +33,9 @@ int main( int argc, char **argv )
 
   particle_t *particles = (particle_t*) malloc( n * sizeof(particle_t) );
   set_size( n );
+  printf("size\n");
   init_particles( n, particles );
+  printf("init\n");
   int num_bins = init_grid();
 
   //
@@ -43,22 +45,19 @@ int main( int argc, char **argv )
 
   for( int step = 0; step < NSTEPS; step++ )
   {
+    printf("%d\n", step);
     navg = 0;
     davg = 0.0;
     dmin = 1.0;
     
     //
-    //  reset particle accelerations
+    //  bin particles
     //
     for (int i = 0; i < n; i++) 
     {
       particles[i].ax = particles[i].ay = 0;
+      bin_particle(&particles[i]);
     }
-
-    //
-    //  bin particles
-    //
-    bin_particles(n, particles);
 
     //
     //  compute forces
@@ -70,7 +69,18 @@ int main( int argc, char **argv )
     //
     //  unbin particles
     //
-    unbin_particles(n, particles);
+    for (int i = 0; i < n; i++)
+    {
+      unbin_particle(&particles[i]);
+    }
+
+    //
+    //  reset bins
+    //
+    for (int i = 0; i < num_bins; i++)
+    {
+      reset_bin(i);
+    }
 
     //
     //  move particles
