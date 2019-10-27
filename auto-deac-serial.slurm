@@ -2,13 +2,13 @@
 #SBATCH -p small          
 #SBATCH -N 1              # you'll never need more than 1 node for the serial code
 #SBATCH --mem=32GB
+#SBATCH --tasks=44
 #SBATCH -t 00:20:00       # adjust the amount of time as necessary
 #SBATCH -J auto-serial
-#SBATCH -o auto-serial.%j.stdout
-#SBATCH -e auto-serial.%j.error
+#SBATCH -o output/auto-serial.%j.stdout
+#SBATCH -e output/auto-serial.%j.error
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=mannlg15@wfu.edu,parssy18@wfu.edu
-#SBATCH --reservation=csc726
 
 cd /deac/classes/csc726/$USER/particle-simulation-part-1-infiniteloop
 
