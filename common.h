@@ -42,10 +42,13 @@ void move( particle_t &p );
 // bin routines
 //
 int init_grid();
+int grid_index(particle_t *p);
+int grid_index(int x, int y);
+int particles_per_bin(int bin);
 void bin_particle(particle_t *p);
 void unbin_particle(particle_t *p);
 void reset_bin(int bin);
-void bin_forces(int index, double *dmin, double *davg, int *navg);
+void bin_forces(int bin, double *dmin, double *davg, int *navg);
 
 //
 //  I/O routines

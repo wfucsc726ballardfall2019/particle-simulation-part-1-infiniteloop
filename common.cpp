@@ -53,7 +53,7 @@ void set_size( int n )
 //
 void init_particles( int n, particle_t *p )
 {
-  srand48( time( NULL ) );
+  srand48(1);
 
   int sx = (int)ceil(sqrt((double)n));
   int sy = (n+sx-1)/sx;
@@ -82,6 +82,8 @@ void init_particles( int n, particle_t *p )
     //
     p[i].vx = drand48()*2-1;
     p[i].vy = drand48()*2-1;
+
+    p[i].next = NULL;
   }
   free( shuffle );
 }
@@ -100,8 +102,7 @@ int init_grid()
 
 void bin_particle(particle_t *p )
 {
-  int index;
-  index = (int)(p->x/cutoff)*num_cols + (int)(p->y/cutoff);
+  int index = grid_index(p);
 
   if (grid[index] == NULL) // HEAD
   {
@@ -115,8 +116,30 @@ void bin_particle(particle_t *p )
 
 }
 
+int particles_per_bin(int bin)
+{
+  int count = 0;
+  particle_t * p = grid[bin];
+  while (p != NULL) {
+    count++;
+    p = p->next;
+  }
+  return count;
+}
 
-void bin_forces(int index, double *dmin, double *davg, int *navg) 
+
+int grid_index(particle_t *p)
+{
+  return (int)(p->x/cutoff)*num_cols + (int)(p->y/cutoff);
+}
+
+int grid_index(int x, int y)
+{
+  return x*num_cols + y;
+}
+
+
+void bin_forces(int bin, double *dmin, double *davg, int *navg) 
 {
   particle_t * p;
   particle_t * n;
@@ -125,10 +148,10 @@ void bin_forces(int index, double *dmin, double *davg, int *navg)
   {
     for ( int j = -1; j <= 1; j++ )
     { 
-      neighbor = index + i*num_cols + j;
+      neighbor = bin + i*num_cols + j;
       if (neighbor >= 0 && neighbor < num_bins)
       {
-        p = grid[index];
+        p = grid[bin];
         while (p != NULL)
         {
           n = grid[neighbor];
@@ -253,5 +276,4 @@ char *read_string( int argc, char **argv, const char *option, char *default_valu
   int iplace = find_option( argc, argv, option );
   if( iplace >= 0 && iplace < argc-1 )
     return argv[iplace+1];
-  return default_value;
-}
+  return default_value;}
