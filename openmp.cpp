@@ -40,6 +40,12 @@ int main( int argc, char **argv )
   set_size( n );
   init_particles( n, particles );
   int num_bins = init_grid();
+
+  int index;
+  omp_lock_t * bins = (omp_lock_t*) malloc(num_bins * sizeof(omp_lock_t));
+  for (int i = 0; i < num_bins; i++) {
+    omp_init_lock(&bins[i]);
+  }
   
   //
   //  simulate a number of time steps
@@ -55,10 +61,14 @@ int main( int argc, char **argv )
     //
     //  bin particles
     //
+#pragma omp parallel for private(index)
     for (int i = 0; i < n; i++) 
     {
       particles[i].ax = particles[i].ay = 0;
+      index = grid_index(&particles[i]);
+      omp_set_lock(&bins[index]);
       bin_particle(&particles[i]);
+      omp_unset_lock(&bins[index]);
     }
 
 
